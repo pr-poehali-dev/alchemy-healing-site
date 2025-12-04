@@ -3,10 +3,26 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 const Index = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("https://cdn.poehali.dev/projects/6f1a5806-022e-4449-aba9-77b42a2763f9/files/0c0ede43-2939-49ba-a9da-f690cf14fdce.jpg");
+  const [title, setTitle] = useState("Алхимия Исцеления");
+  const [aboutText, setAboutText] = useState("Добро пожаловать в пространство трансформации и исцеления. Я помогаю людям обрести внутреннюю гармонию, восстановить энергетический баланс и раскрыть свой истинный потенциал.\n\nИспользуя древние техники и современные подходы, мы вместе создадим путь к вашему обновлению и глубинным изменениям на всех уровнях бытия.");
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,19 +65,38 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <section className="container mx-auto px-4 py-16 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Алхимия Исцеления
-        </h1>
+        {isEditing ? (
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="text-5xl md:text-6xl font-bold mb-8 text-center bg-transparent border-2 border-primary"
+          />
+        ) : (
+          <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            {title}
+          </h1>
+        )}
         
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-8 relative">
           <img 
-            src="https://cdn.poehali.dev/projects/6f1a5806-022e-4449-aba9-77b42a2763f9/files/0c0ede43-2939-49ba-a9da-f690cf14fdce.jpg" 
+            src={profilePhoto} 
             alt="Фото специалиста" 
             className="w-64 h-64 rounded-full object-cover border-4 border-secondary shadow-2xl"
           />
+          {isEditing && (
+            <label className="absolute bottom-0 right-1/2 translate-x-32 bg-secondary text-secondary-foreground p-3 rounded-full cursor-pointer hover:bg-secondary/90 shadow-lg">
+              <Icon name="Camera" size={24} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+            </label>
+          )}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Button 
             size="lg" 
             className="w-full sm:w-auto text-lg gap-2 hover-scale"
@@ -80,20 +115,32 @@ const Index = () => {
             Записаться на консультацию
           </Button>
         </div>
+        
+        <Button
+          onClick={() => setIsEditing(!isEditing)}
+          variant={isEditing ? "default" : "outline"}
+          className="mb-8"
+        >
+          <Icon name={isEditing ? "Check" : "Pencil"} size={18} className="mr-2" />
+          {isEditing ? "Сохранить" : "Редактировать сайт"}
+        </Button>
       </section>
 
       <section className="container mx-auto px-4 py-16 max-w-3xl animate-fade-in">
         <Card className="border-2 border-primary/10 shadow-lg">
           <CardContent className="p-8">
             <h2 className="text-3xl font-bold mb-6 text-center text-gray-900 font-heading">О практике</h2>
-            <p className="text-lg text-gray-700 leading-relaxed mb-4">
-              Добро пожаловать в пространство трансформации и исцеления. Я помогаю людям обрести внутреннюю гармонию, 
-              восстановить энергетический баланс и раскрыть свой истинный потенциал.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Используя древние техники и современные подходы, мы вместе создадим путь к вашему обновлению и 
-              глубинным изменениям на всех уровнях бытия.
-            </p>
+            {isEditing ? (
+              <Textarea
+                value={aboutText}
+                onChange={(e) => setAboutText(e.target.value)}
+                className="min-h-[200px] text-lg"
+              />
+            ) : (
+              <div className="text-lg text-gray-700 leading-relaxed whitespace-pre-line">
+                {aboutText}
+              </div>
+            )}
           </CardContent>
         </Card>
       </section>

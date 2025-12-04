@@ -177,8 +177,11 @@ const Index = () => {
         </Card>
       </section>
 
-      <footer className="container mx-auto px-4 py-8 text-center text-muted-foreground">
-        <p>© 2024 Алхимия Исцеления. Все права защищены.</p>
+      <footer className="bg-gray-900 text-white py-8 mt-20">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-lg font-heading mb-2">Алхимия Исцеления</p>
+          <p className="text-gray-400">Трансформация • Исцеление • Гармония</p>
+        </div>
       </footer>
     </div>
   );
